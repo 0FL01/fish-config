@@ -25,4 +25,12 @@ if status is-interactive
     function dl --wraps='docker logs -f -t' --description 'Colored logs from a specific container'
         docker logs -f -t $argv | bat -l log --paging=never --color=always --style=plain
     end
+
+    function tail --wraps=tail --description 'Alias for tail | bat'
+        command tail $argv | bat -l log --paging=never --color=always --style=plain
+    end
+
+    function head --wraps=head --description 'Alias for head | bat'
+        command head $argv | bat -l log --paging=never --color=always --style=plain
+    end
 end
