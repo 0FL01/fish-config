@@ -21,5 +21,8 @@ if status is-interactive
     function dlogs --wraps='docker compose logs -f -t' --description 'Colored logs from docker-compose'
         docker compose logs -f -t --no-color | bat -l log --paging=never --color=always --style=plain $argv
     end
-end
 
+    function dl --wraps='docker logs -f -t' --description 'Colored logs from a specific container'
+        docker logs -f -t $argv | bat -l log --paging=never --color=always --style=plain
+    end
+end
