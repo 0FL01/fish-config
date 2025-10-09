@@ -33,4 +33,55 @@ if status is-interactive
     function head --wraps=head --description 'Alias for head | bat'
         command head $argv | bat -l log --paging=never --color=always --style=plain
     end
+
+    # Обёртка для sudo с поддержкой bat
+    function sudo --wraps=sudo --description 'Sudo wrapper with bat support'
+        set -l cmd $argv[1]
+        set -l rest $argv[2..]
+
+        switch $cmd
+            case cat
+                if test (count $rest) -gt 0
+                    command sudo cat $rest | bat --file-name="$rest[-1]" --paging=never --style=plain
+                else
+                    command sudo cat | bat --paging=never --style=plain
+                end
+            case tail
+                if test (count $rest) -gt 0
+                    set -l filename
+                    for arg in $rest
+                        if not string match -q -- '-*' $arg
+                            set filename $arg
+                        end
+                    end
+                    if test -n "$filename"
+                        command sudo tail $rest | bat --file-name="$filename" --paging=never --style=plain
+                    else
+                        command sudo tail $rest | bat -l log --paging=never --color=always --style=plain
+                    end
+                else
+                    command sudo tail | bat -l log --paging=never --color=always --style=plain
+                end
+            case head
+                if test (count $rest) -gt 0
+                    set -l filename
+                    for arg in $rest
+                        if not string match -q -- '-*' $arg
+                            set filename $arg
+                        end
+                    end
+                    if test -n "$filename"
+                        command sudo head $rest | bat --file-name="$filename" --paging=never --style=plain
+                    else
+                        command sudo head $rest | bat -l log --paging=never --color=always --style=plain
+                    end
+                else
+                    command sudo head | bat -l log --paging=never --color=always --style=plain
+                end
+            case '*'
+                command sudo $argv
+        end
+    end
 end
+
+
