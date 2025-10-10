@@ -84,4 +84,55 @@ if status is-interactive
     end
 end
 
+# --- Удобная работа с системным журналом (journalctl) ---
+# Примеры использования:
+# jlogs             - показать логи, начиная с самых новых (как journalctl -r)
+# jfollow           - следить за логами в реальном времени (как journalctl -f)
+# jerr              - следить только за ошибками
+# jboot             - показать логи с момента последней загрузки системы
+# junit <service>   - следить за логами конкретного сервиса, например: junit sshd
 
+# Автоматический выбор между bat и batcat (для совместимости с Debian/Ubuntu)
+if not command -v bat >/dev/null 2>&1; and command -v batcat >/dev/null 2>&1
+  alias bat="batcat"
+end
+
+# Основная функция. По умолчанию показывает логи в обратном порядке (новые сверху).
+# Автоматически отключает обратный порядок при слежении (-f), т.к. они несовместимы.
+function jlogs --wraps='journalctl' --description 'View systemd journal with bat (newest first)'
+    set -l bat_args --language=log --color=always --style=plain
+    set -l jctl_args $argv
+
+    if contains -- "-f" $jctl_args; or contains -- "--follow" $jctl_args
+        set -a bat_args --paging=never
+    else
+        # Показываем новые логи первыми, но только если не в режиме слежения.
+        set -a jctl_args -r
+    end
+
+    command journalctl --no-pager $jctl_args | bat $bat_args
+end
+
+# Короткий псевдоним для слежения за всеми логами.
+function jfollow --wraps='jlogs -f' --description 'Follow systemd journal with bat'
+    jlogs -f $argv
+end
+
+# Слежение только за ошибками (уровень 3) и выше.
+function jerr --wraps='jlogs -p 3 -f' --description 'Follow systemd journal errors with bat'
+    jlogs -p 3 -f $argv
+end
+
+# Просмотр логов для текущей сессии загрузки.
+function jboot --wraps='jlogs -b 0' --description 'View logs for current boot with bat'
+    jlogs -b 0 $argv
+end
+
+# Слежение за логами конкретного systemd-юнита.
+function junit --wraps='jlogs -u ... -f' --description 'Follow logs for a specific unit'
+    if test (count $argv) -eq 0
+        echo "Использование: junit <имя_юнита> [другие_опции_journalctl]"
+        return 1
+    end
+    jlogs -u $argv[1] -f $argv[2..-1]
+end
