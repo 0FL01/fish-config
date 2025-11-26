@@ -253,6 +253,12 @@ install_cli_tools() {
 setup_config() {
     info "Настройка конфигурации..."
     
+    # Не создавать бэкап, если .zshrc уже от этого проекта
+    if [[ -f "$HOME/.zshrc" ]] && grep -q "0FL01/shell-config" "$HOME/.zshrc" 2>/dev/null; then
+        info ".zshrc уже настроен, пропускаю"
+        return 0
+    fi
+    
     # Backup existing .zshrc if it exists and is not a symlink
     if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]]; then
         local backup_file="$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
@@ -288,8 +294,8 @@ change_shell() {
         echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
     fi
     
-    # Change shell
-    if chsh -s "$zsh_path"; then
+    # Change shell (</dev/tty needed when script is piped via curl | bash)
+    if chsh -s "$zsh_path" </dev/tty; then
         success "Оболочка по умолчанию изменена на zsh"
     else
         warn "Не удалось сменить оболочку автоматически."
