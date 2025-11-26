@@ -255,7 +255,10 @@ alias kgj='k get --output=json'
 
 if command -v fzf &>/dev/null; then
     # Try modern zsh integration first (fzf 0.48+)
-    if [[ $(fzf --version | cut -d. -f1-2 | tr -d .) -ge 048 ]] 2>/dev/null; then
+    # Parse version: "0.60 (devel)" → "060" → 60
+    local fzf_ver
+    fzf_ver=$(fzf --version 2>/dev/null | awk '{print $1}' | tr -d '.')
+    if [[ ${fzf_ver:-0} -ge 48 ]] 2>/dev/null; then
         source <(fzf --zsh)
     elif [[ -f ~/.fzf.zsh ]]; then
         source ~/.fzf.zsh
