@@ -243,3 +243,49 @@ alias kgcm='k get configmap'
 
 alias kgy='k get --output=yaml'
 alias kgj='k get --output=json'
+
+# =============================================================================
+# FZF - Fuzzy Finder
+# =============================================================================
+# Ctrl+R - поиск по истории команд
+# Ctrl+T - поиск файлов
+# Alt+C  - переход в директорию
+
+if command -v fzf &>/dev/null; then
+    # Try modern zsh integration first (fzf 0.48+)
+    if [[ $(fzf --version | cut -d. -f1-2 | tr -d .) -ge 048 ]] 2>/dev/null; then
+        source <(fzf --zsh)
+    elif [[ -f ~/.fzf.zsh ]]; then
+        source ~/.fzf.zsh
+    fi
+    
+    # FZF options
+    export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
+    
+    # Use fd if available (faster than find)
+    if command -v fd &>/dev/null; then
+        export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+    fi
+fi
+
+# =============================================================================
+# Zoxide - Smarter cd
+# =============================================================================
+# z <query>  - перейти в директорию
+# zi <query> - интерактивный выбор директории
+
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# =============================================================================
+# Pay Respects - Press F to fix command
+# =============================================================================
+# f - исправить последнюю команду
+# Нажми F чтобы отдать респект (и исправить ошибку)
+
+if command -v pay-respects &>/dev/null; then
+    eval "$(pay-respects zsh --alias)"
+fi

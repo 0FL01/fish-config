@@ -103,25 +103,40 @@ install_dependencies() {
     
     # Install bat (optional but recommended)
     if ! command -v bat &>/dev/null && ! command -v batcat &>/dev/null; then
+        packages_to_install+=("bat")
+    else
+        success "bat уже установлен"
+    fi
+    
+    # Install fzf
+    if ! command -v fzf &>/dev/null; then
+        packages_to_install+=("fzf")
+    else
+        success "fzf уже установлен"
+    fi
+    
+    # Install zoxide
+    if ! command -v zoxide &>/dev/null; then
         case "$PKG_MANAGER" in
             apt)
-                packages_to_install+=("bat")
+                # zoxide may not be in older Debian/Ubuntu repos
+                packages_to_install+=("zoxide")
                 ;;
             dnf)
-                packages_to_install+=("bat")
+                packages_to_install+=("zoxide")
                 ;;
             pacman)
-                packages_to_install+=("bat")
+                packages_to_install+=("zoxide")
                 ;;
             zypper)
-                packages_to_install+=("bat")
+                packages_to_install+=("zoxide")
                 ;;
             apk)
-                packages_to_install+=("bat")
+                packages_to_install+=("zoxide")
                 ;;
         esac
     else
-        success "bat уже установлен"
+        success "zoxide уже установлен"
     fi
     
     if [[ ${#packages_to_install[@]} -gt 0 ]]; then
@@ -192,6 +207,46 @@ install_plugins() {
 }
 
 # -----------------------------------------------------------------------------
+# Install CLI tools (fzf fallback, zoxide fallback, pay-respects)
+# -----------------------------------------------------------------------------
+
+install_cli_tools() {
+    info "Установка CLI инструментов..."
+    
+    # Fallback: Install fzf from git if not available
+    if ! command -v fzf &>/dev/null; then
+        warn "fzf не найден в пакетном менеджере, устанавливаю из git..."
+        if [[ -d "$HOME/.fzf" ]]; then
+            warn "~/.fzf уже существует, пропускаю"
+        else
+            git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+            "$HOME/.fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
+            success "fzf установлен из git"
+        fi
+    else
+        success "fzf уже установлен"
+    fi
+    
+    # Fallback: Install zoxide from installer if not available
+    if ! command -v zoxide &>/dev/null; then
+        warn "zoxide не найден в пакетном менеджере, устанавливаю..."
+        curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+        success "zoxide установлен"
+    else
+        success "zoxide уже установлен"
+    fi
+    
+    # Install pay-respects
+    if ! command -v pay-respects &>/dev/null; then
+        info "Установка pay-respects..."
+        curl -sSfL https://raw.githubusercontent.com/iffse/pay-respects/main/install.sh | sh
+        success "pay-respects установлен"
+    else
+        success "pay-respects уже установлен"
+    fi
+}
+
+# -----------------------------------------------------------------------------
 # Setup configuration
 # -----------------------------------------------------------------------------
 
@@ -258,6 +313,7 @@ main() {
     install_dependencies
     install_oh_my_zsh
     install_plugins
+    install_cli_tools
     setup_config
     change_shell
     

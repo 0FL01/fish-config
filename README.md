@@ -14,6 +14,9 @@ curl -fsSL https://raw.githubusercontent.com/0FL01/shell-config/main/install.sh 
 - **zsh** — Z Shell
 - **git** — система контроля версий
 - **bat** — улучшенный cat с подсветкой синтаксиса
+- **fzf** — fuzzy finder для поиска по истории и файлам
+- **zoxide** — умный cd, запоминает часто используемые директории
+- **pay-respects** — исправление команд нажатием F (замена thefuck на Rust)
 
 ### Oh-My-Zsh
 - [Oh-My-Zsh](https://ohmyz.sh/) — фреймворк для управления конфигурацией ZSH
@@ -40,6 +43,29 @@ curl -fsSL https://raw.githubusercontent.com/0FL01/shell-config/main/install.sh 
 | Alpine Linux | apk |
 
 ## ⚙️ Включённые функции
+
+### 🔍 FZF — Fuzzy Finder
+
+```bash
+Ctrl+R    # Поиск по истории команд
+Ctrl+T    # Поиск файлов в текущей директории
+Alt+C     # Переход в директорию
+```
+
+### 📂 Zoxide — Умный cd
+
+```bash
+z proj         # Перейти в часто используемую директорию, содержащую "proj"
+z foo bar      # Нечёткий поиск по нескольким словам
+zi             # Интерактивный выбор директории с fzf
+```
+
+### 🙏 Pay Respects — Исправление команд
+
+```bash
+f              # Исправить последнюю неверную команду
+# Нажми F чтобы отдать респект и исправить ошибку!
+```
 
 ### 🎨 Цветной вывод с bat
 
@@ -107,13 +133,16 @@ kl                    # logs -f
 ```bash
 # 1. Установите зависимости
 # Ubuntu/Debian:
-sudo apt install zsh git curl bat
+sudo apt install zsh git curl bat fzf zoxide
 
 # Fedora:
-sudo dnf install zsh git curl bat
+sudo dnf install zsh git curl bat fzf zoxide
 
 # Arch:
-sudo pacman -S zsh git curl bat
+sudo pacman -S zsh git curl bat fzf zoxide
+
+# 1.1. Установите pay-respects
+curl -sSfL https://raw.githubusercontent.com/iffse/pay-respects/main/install.sh | sh
 
 # 2. Установите Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -165,4 +194,7 @@ plugins=(
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
 - [zsh-completions](https://github.com/zsh-users/zsh-completions)
 - [bat](https://github.com/sharkdp/bat)
+- [fzf](https://github.com/junegunn/fzf)
+- [zoxide](https://github.com/ajeetdsouza/zoxide)
+- [pay-respects](https://github.com/iffse/pay-respects)
 
