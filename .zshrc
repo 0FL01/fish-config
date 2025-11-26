@@ -3,6 +3,10 @@
 # https://github.com/0FL01/fish-config
 # =============================================================================
 
+# --- PATH Configuration ---
+# Add ~/.local/bin to PATH (for pay-respects, zoxide, etc.)
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+
 # --- Oh-My-Zsh Configuration ---
 export ZSH="$HOME/.oh-my-zsh"
 
