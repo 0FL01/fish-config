@@ -187,6 +187,7 @@ sudo() {
 # =============================================================================
 
 # kubectl with smart output formatting
+unalias k 2>/dev/null
 k() {
     if [[ $# -gt 0 ]]; then
         case "$1" in
