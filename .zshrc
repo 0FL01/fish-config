@@ -218,6 +218,7 @@ k() {
 }
 
 # Colored logs from Kubernetes pods
+unalias kl 2>/dev/null
 kl() {
     kubectl logs "$@" --color=never | bat -l log --paging=never --color=always --style=plain
 }
@@ -230,7 +231,7 @@ alias kdelf='k delete -f'
 alias kdesc='k describe'
 alias kedit='k edit'
 alias kex='k exec -i -t'
-alias kl='k logs -f'
+alias klf='k logs -f'  # kl - function with bat coloring
 
 alias kg='k get'
 alias kgp='k get pods'
