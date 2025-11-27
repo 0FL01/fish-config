@@ -19,6 +19,7 @@ plugins=(
     docker
     docker-compose
     kubectl
+    systemd
     zsh-syntax-highlighting
     zsh-autosuggestions
     zsh-completions
@@ -66,6 +67,10 @@ dlogs() {
 dl() {
     docker logs -f -t "$@" | bat -l log --paging=never --color=always --style=plain
 }
+
+# Enable docker completion for docker functions
+compdef dl=docker
+compdef dlogs=docker
 
 # Tail with bat
 tail() {
@@ -123,6 +128,13 @@ junit() {
     fi
     jlogs -u "$1" -f "${@:2}"
 }
+
+# Enable journalctl completion for journal functions
+compdef jlogs=journalctl
+compdef jfollow=journalctl
+compdef jerr=journalctl
+compdef jboot=journalctl
+compdef junit=journalctl
 
 # =============================================================================
 # Sudo Wrapper
