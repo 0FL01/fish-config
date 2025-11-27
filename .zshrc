@@ -228,6 +228,10 @@ kl() {
     kubectl logs "$@" --color=never | bat -l log --paging=never --color=always --style=plain
 }
 
+# Enable kubectl completion for k and kl functions
+compdef k=kubectl
+compdef kl=kubectl
+
 # --- Kubectl Aliases ---
 alias ka='k apply -f'
 alias kdel='k delete'
