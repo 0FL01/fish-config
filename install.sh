@@ -270,6 +270,16 @@ setup_config() {
     info "Скачивание конфигурации..."
     curl -fsSL "$REPO_URL/.zshrc" -o "$HOME/.zshrc"
     
+    # Принудительно отключаем автообновления Oh-My-Zsh
+    local tmp_file="$HOME/.zshrc.tmp.$$"
+    LC_ALL=C sed '/^DISABLE_AUTO_UPDATE=/d;/^DISABLE_UPDATE_PROMPT=/d' "$HOME/.zshrc" > "$tmp_file"
+    {
+        echo 'DISABLE_AUTO_UPDATE="true"'
+        echo 'DISABLE_UPDATE_PROMPT="true"'
+    } >> "$tmp_file"
+    mv "$tmp_file" "$HOME/.zshrc"
+    success "Автообновления Oh-My-Zsh отключены в $HOME/.zshrc"
+    
     success "Конфигурация установлена в $HOME/.zshrc"
 }
 

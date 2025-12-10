@@ -13,6 +13,12 @@ export ZSH="$HOME/.oh-my-zsh"
 # Theme (see https://github.com/ohmyzsh/ohmyzsh/wiki/Themes)
 ZSH_THEME="robbyrussell"
 
+# Отключить автоматическую проверку обновлений
+DISABLE_AUTO_UPDATE="true"
+
+# Отключить напоминание об обновлении
+DISABLE_UPDATE_PROMPT="true"
+
 # Plugins
 plugins=(
     git
